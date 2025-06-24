@@ -56,12 +56,30 @@ class App < Sinatra::Base
     end
   end
 
+  AVAILABLE_THEMES = %w[
+    theme-crt-green
+    theme-synthwave-purple
+    theme-arcade-orange
+    theme-terminal-amber
+    theme-blueprint-blue
+    theme-minimalist-contrast
+  ]
+  DEFAULT_THEME = 'theme-crt-green'
+
   get '/view/birthday' do
     birthday_str = params[:birthday]
     @days_since, @error = calculate_days_since(birthday_str)
 
+    requested_theme = params[:theme]
+    @theme_name = if requested_theme && AVAILABLE_THEMES.include?(requested_theme)
+                    requested_theme
+                  else
+                    DEFAULT_THEME
+                  end
+
     if @error
       status 400
+      # Pass theme to error view as well, in case it has themed elements
       erb :error_view
     else
       erb :styled_birthday_view

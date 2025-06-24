@@ -79,7 +79,20 @@ http://localhost:9292/view/birthday?birthday=1985-03-20
 http://localhost:9292/view/birthday?birthday=1985-03-20T08:00:00
 ```
 
-This view will show the number of days in the bottom-right corner with white text and a black outline.
+This view will show the number of days in the bottom-right corner with white text and a black outline by default, but now supports themes.
+
+**Theming the Styled View:**
+
+The styled view supports a `theme` query parameter to change its appearance.
+Example: `http://localhost:9292/view/birthday?birthday=1985-03-20&theme=theme-synthwave-purple`
+
+Available themes:
+*   `theme-crt-green` (Default): Classic monochrome green CRT terminal look, top-left.
+*   `theme-synthwave-purple`: Neon purple and pink on a dark background, with subtle scanlines, top-left.
+*   `theme-arcade-orange`: Bright orange/yellow text on a black background, centered, evoking classic arcade game scores.
+*   `theme-terminal-amber`: Monochrome amber terminal look with scanlines, top-left.
+*   `theme-blueprint-blue`: Light cyan text on a dark blue background with a blueprint grid effect, top-left.
+*   `theme-minimalist-contrast`: Clean white text on a dark background, positioned bottom-right.
 
 ### No-Style View: `/no_style/birthday`
 
