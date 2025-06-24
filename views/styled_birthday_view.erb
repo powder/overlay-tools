@@ -6,43 +6,67 @@
     <title>Days Since Birthday</title>
     <style>
         body {
-            background-color: transparent;
+            background-color: transparent; /* Keep transparent for OBS overlay */
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
-            color: white;
-            text-shadow:
-                -1px -1px 0 #000,
-                 1px -1px 0 #000,
-                -1px  1px 0 #000,
-                 1px  1px 0 #000; /* Simple black outline */
+            font-family: 'Lucida Console', 'Courier New', monospace; /* Retro monospaced font */
+            color: #00FF00; /* Bright green */
             display: flex;
-            justify-content: flex-end; /* Align to the right */
-            align-items: flex-end;   /* Align to the bottom */
-            height: 100vh; /* Full viewport height */
-            overflow: hidden; /* Hide scrollbars if content overflows somehow */
+            justify-content: flex-start; /* Align to the top-left for score display */
+            align-items: flex-start;   /* Align to the top */
+            height: 100vh;
+            overflow: hidden;
+            text-rendering: optimizeSpeed; /* For sharper pixelated look if font supports */
         }
+
+        /* Optional: Scan line effect for the whole screen */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 6px 100%;
+            z-index: 1; /* Behind the text container */
+            pointer-events: none; /* Allow clicks through */
+            opacity: 0.3;
+        }
+
         .container {
-            padding: 20px;
-            text-align: right;
+            padding: 10px; /* Smaller padding */
+            text-align: left;
+            background-color: rgba(0, 0, 0, 0.5); /* Optional: slightly dark background for the text box itself for better readability */
+            border: 2px solid #00FF00; /* Green border */
+            box-shadow: 0 0 10px #00FF00; /* Green glow */
+            margin: 10px; /* Position from top-left */
+            z-index: 2; /* Above scan lines */
         }
-        .days-count {
-            font-size: 48px; /* Large font size */
+        .days-count { /* Will now be "high score" value */
+            font-size: 28px; /* Smaller font size for "tiny score" feel */
             font-weight: bold;
+            letter-spacing: 2px; /* Slight letter spacing for retro feel */
+            text-shadow: 0 0 5px #00FF00, 0 0 10px #00FF00; /* Green glow text shadow */
         }
-        .label {
-            font-size: 24px;
+        .label { /* Will now be "High Score" text */
+            font-size: 14px; /* Smaller label */
+            text-transform: uppercase; /* Common in old games */
+            margin-top: 2px;
+            text-shadow: 0 0 5px #00FF00;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <% if @days_since %>
+            <div class="label">High Score</div>
             <div class="days-count"><%= @days_since %></div>
-            <div class="label">days ago</div>
         <% else %>
             <!-- This part should ideally not be reached if error handling in route is good -->
-            <div class="label">Error calculating days.</div>
+            <div class="label">Error</div>
         <% end %>
     </div>
 </body>
