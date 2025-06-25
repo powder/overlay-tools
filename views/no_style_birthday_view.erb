@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Days Since Birthday (No Style)</title>
+</head>
+<body>
+    <% if @days_since %>
+        <div class="birthday-calculator">
+            <p><span class="days-count"><%= @days_since %></span> <span class="days-label">days</span> have passed since the specified date.</p>
+        </div>
+    <% else %>
+        <!-- This part should ideally not be reached if error handling in route is good -->
+        <div class="birthday-calculator-error">
+            <p>Error calculating days.</p>
+        </div>
+    <% end %>
+</body>
+</html>

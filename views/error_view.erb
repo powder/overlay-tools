@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error</title>
+    <style>
+        body {
+            background-color: rgba(0, 0, 0, 0.8); /* Dark semi-transparent background for errors */
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            color: white;
+            text-align: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .error-message {
+            font-size: 24px;
+            padding: 20px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-message">
+        <h1>Error</h1>
+        <p><%= @error || "An unexpected error occurred." %></p>
+        <p><a href="javascript:history.back()" style="color: #8af;">Go Back</a></p>
+    </div>
+</body>
+</html>

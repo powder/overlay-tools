@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Days Since Birthday</title>
+    <style>
+        body {
+            /* Base Body Styles */
+            background-color: transparent; /* Keep transparent for OBS overlay */
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex; /* For positioning the container */
+
+            /* Default Theme Variables (CRT Green - can be overridden by theme classes) */
+            --main-font: 'Lucida Console', 'Courier New', monospace;
+            --text-color: #00FF00; /* Bright green */
+            --glow-color: #00FF00;
+            --border-color: #00FF00;
+            --container-bg-color: rgba(0, 0, 0, 0.5);
+            --scanline-opacity: 0.3;
+            --container-position-justify: flex-start; /* top for crt, synthwave */
+            --container-position-align: flex-start;   /* left for crt, synthwave */
+            --container-margin: 10px;
+            --label-font-size: 14px;
+            --score-font-size: 28px;
+            --text-transform: uppercase;
+            --letter-spacing: 2px;
+        }
+
+        body {
+            font-family: var(--main-font);
+            color: var(--text-color);
+            justify-content: var(--container-position-justify);
+            align-items: var(--container-position-align);
+            text-rendering: optimizeSpeed;
+        }
+
+        /* Scan line effect for the whole screen - applied by default for CRT like themes */
+        body.theme-crt-green::before,
+        body.theme-terminal-amber::before,
+        body.theme-synthwave-purple::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 6px 100%;
+            z-index: 1;
+            pointer-events: none;
+            opacity: var(--scanline-opacity);
+        }
+
+        /* Theme Definitions: Overriding CSS Variables */
+        /* 1. CRT Green (Default, but explicitly defined for clarity) */
+        body.theme-crt-green {
+            /* Variables are already set to CRT green defaults */
+        }
+
+        /* 2. Synthwave Neon Purple */
+        body.theme-synthwave-purple {
+            --text-color: #DA00FF; /* Bright neon purple */
+            --glow-color: #DA00FF;
+            --border-color: #DA00FF;
+            --container-bg-color: rgba(10, 0, 20, 0.6); /* Dark purpleish background */
+            --main-font: 'Arial', sans-serif; /* Cleaner font for synthwave */
+            --letter-spacing: 1px;
+            --scanline-opacity: 0.15; /* More subtle scanlines */
+        }
+
+        /* 3. Classic Arcade (Orange/Yellow on Black) */
+        body.theme-arcade-orange {
+            --text-color: #FFA500; /* Bright orange */
+            --glow-color: #FFA500;
+            --border-color: #FFA500;
+            --container-bg-color: rgba(0, 0, 0, 0.7); /* Darker background */
+            --main-font: 'Consolas', 'Courier New', monospace; /* Slightly blockier feel */
+            --letter-spacing: 1px;
+            --container-position-justify: center; /* Center for classic arcade */
+            --container-position-align: center;
+            --container-margin: 0; /* No margin if centered */
+        }
+        body.theme-arcade-orange .label { font-size: 16px; }
+        body.theme-arcade-orange .days-count { font-size: 32px; }
+
+
+        /* 4. Terminal Amber */
+        body.theme-terminal-amber {
+            --text-color: #FFBF00; /* Amber */
+            --glow-color: #FFBF00;
+            --border-color: #FFBF00;
+            --container-bg-color: rgba(20, 10, 0, 0.5); /* Dark brownish */
+        }
+
+        /* 5. Blueprint Blue */
+        body.theme-blueprint-blue {
+            --text-color: #7DF9FF; /* Light cyan/blue */
+            --glow-color: #7DF9FF;
+            --border-color: #7DF9FF;
+            --container-bg-color: rgba(0, 10, 20, 0.5); /* Dark blueish */
+            --main-font: 'Verdana', sans-serif; /* Clean thin font */
+            --letter-spacing: 0.5px;
+            --text-transform: none; /* Normal case for blueprint */
+        }
+        body.theme-blueprint-blue .container::before { /* Grid effect */
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(var(--border-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.2;
+            z-index: -1;
+        }
+         body.theme-blueprint-blue .container { border-style: dashed; }
+
+
+        /* 6. Minimalist Contrast (White on Dark) */
+        body.theme-minimalist-contrast {
+            --text-color: #FFFFFF;
+            --glow-color: #FFFFFF; /* Subtle glow or none */
+            --border-color: #FFFFFF;
+            --container-bg-color: rgba(0, 0, 0, 0.6);
+            --main-font: 'Helvetica Neue', Arial, sans-serif; /* Very clean sans-serif */
+            --letter-spacing: 0px;
+            --text-transform: none;
+            --container-position-justify: flex-end;
+            --container-position-align: flex-end;
+        }
+         body.theme-minimalist-contrast .days-count { text-shadow: 0 0 2px var(--glow-color); }
+         body.theme-minimalist-contrast .label { text-shadow: 0 0 1px var(--glow-color); }
+         body.theme-minimalist-contrast .container { box-shadow: none; }
+
+
+        /* Container Base Styles - uses variables */
+        .container {
+            padding: 10px;
+            text-align: left; /* Default, can be overridden by theme if needed */
+            background-color: var(--container-bg-color);
+            border: 2px solid var(--border-color);
+            box-shadow: 0 0 10px var(--glow-color);
+            margin: var(--container-margin);
+            z-index: 2; /* Above scan lines */
+            position: relative; /* For pseudo-elements like blueprint grid */
+        }
+
+        .days-count { /* Score value */
+            font-size: var(--score-font-size);
+            font-weight: bold;
+            letter-spacing: var(--letter-spacing);
+            text-shadow: 0 0 5px var(--glow-color), 0 0 10px var(--glow-color);
+        }
+        .label { /* "High Score" text */
+            font-size: var(--label-font-size);
+            text-transform: var(--text-transform);
+            margin-bottom: 2px; /* Use margin-bottom to space from score below */
+            text-shadow: 0 0 5px var(--glow-color);
+        }
+    </style>
+</head>
+<body class="<%= @theme_name || 'theme-crt-green' %>"> <!-- Dynamically set theme class -->
+    <div class="container">
+        <% if @days_since %>
+            <div class="label">High Score</div>
+            <div class="days-count"><%= @days_since %></div>
+        <% else %>
+            <div class="label">Error</div>
+            <div class="days-count">-</div> {/* Placeholder for error score */}
+        <% end %>
+    </div>
+</body>
+</html>
